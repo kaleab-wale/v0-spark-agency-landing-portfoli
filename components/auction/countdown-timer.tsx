@@ -1,10 +1,12 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { cn } from "@/lib/utils"
 
 interface CountdownTimerProps {
   targetDate: Date
   label?: string
+  variant?: "default" | "light"
 }
 
 interface TimeLeft {
@@ -14,7 +16,7 @@ interface TimeLeft {
   seconds: number
 }
 
-export function CountdownTimer({ targetDate, label = "Ends in" }: CountdownTimerProps) {
+export function CountdownTimer({ targetDate, label, variant = "default" }: CountdownTimerProps) {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 0, hours: 0, minutes: 0, seconds: 0 })
   const [isExpired, setIsExpired] = useState(false)
 
@@ -47,29 +49,38 @@ export function CountdownTimer({ targetDate, label = "Ends in" }: CountdownTimer
   if (isExpired) {
     return (
       <div className="text-center">
-        <p className="text-sm text-muted-foreground">Auction Ended</p>
+        <p className={cn("text-sm", variant === "light" ? "text-white/70" : "text-muted-foreground")}>Auction Ended</p>
       </div>
     )
   }
 
   return (
-    <div className="text-center">
-      <p className="mb-2 text-sm text-muted-foreground">{label}</p>
-      <div className="flex justify-center gap-2">
-        <TimeBlock value={timeLeft.days} label="Days" />
-        <TimeBlock value={timeLeft.hours} label="Hrs" />
-        <TimeBlock value={timeLeft.minutes} label="Min" />
-        <TimeBlock value={timeLeft.seconds} label="Sec" />
+    <div>
+      {label && (
+        <p className={cn("mb-2 text-sm", variant === "light" ? "text-white/70" : "text-muted-foreground")}>{label}</p>
+      )}
+      <div className="flex gap-2">
+        <TimeBlock value={timeLeft.days} label="Days" variant={variant} />
+        <TimeBlock value={timeLeft.hours} label="Hrs" variant={variant} />
+        <TimeBlock value={timeLeft.minutes} label="Min" variant={variant} />
+        <TimeBlock value={timeLeft.seconds} label="Sec" variant={variant} />
       </div>
     </div>
   )
 }
 
-function TimeBlock({ value, label }: { value: number; label: string }) {
+function TimeBlock({ value, label, variant }: { value: number; label: string; variant: "default" | "light" }) {
   return (
-    <div className="flex flex-col items-center rounded-lg bg-secondary px-3 py-2">
-      <span className="text-2xl font-bold tabular-nums">{value.toString().padStart(2, "0")}</span>
-      <span className="text-xs text-muted-foreground">{label}</span>
+    <div
+      className={cn(
+        "flex flex-col items-center rounded-lg px-3 py-2",
+        variant === "light" ? "bg-white/10" : "bg-secondary",
+      )}
+    >
+      <span className={cn("text-2xl font-bold tabular-nums", variant === "light" ? "text-white" : "text-foreground")}>
+        {value.toString().padStart(2, "0")}
+      </span>
+      <span className={cn("text-xs", variant === "light" ? "text-white/70" : "text-muted-foreground")}>{label}</span>
     </div>
   )
 }

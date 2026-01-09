@@ -1,9 +1,8 @@
 import { Suspense } from "react"
 import { AuctionCard } from "@/components/auction/auction-card"
-import { Badge } from "@/components/ui/badge"
-import { mockAuctions, getFeaturedLots } from "@/lib/mock-data"
-import { LotCard } from "@/components/auction/lot-card"
-import { ArrowRight, Sparkles } from "lucide-react"
+import { AuctionCarousel } from "@/components/auction/auction-carousel"
+import { mockAuctions } from "@/lib/mock-data"
+import { Shield, Gavel, Globe, Users, Clock, Award } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import type { Metadata } from "next"
@@ -16,30 +15,14 @@ export const metadata: Metadata = {
 export default function AuctionsPage() {
   const liveAuctions = mockAuctions.filter((a) => a.status === "LIVE")
   const upcomingAuctions = mockAuctions.filter((a) => a.status === "DRAFT")
-  const featuredLots = getFeaturedLots()
+  const carouselAuctions = [...liveAuctions, ...upcomingAuctions]
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-primary py-20 text-primary-foreground">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[size:4rem_4rem]" />
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <Badge variant="secondary" className="mb-4">
-              <Sparkles className="mr-1 h-3 w-3" />
-              Premium Auctions
-            </Badge>
-            <h1 className="font-serif text-4xl font-normal tracking-tight sm:text-5xl lg:text-6xl">
-              Discover Extraordinary
-              <br />
-              <span className="italic">Collections</span>
-            </h1>
-            <p className="mt-6 text-lg text-primary-foreground/80">
-              Browse curated auctions featuring fine art, luxury timepieces, classic automobiles, and rare collectibles
-              from around the world.
-            </p>
-          </div>
-        </div>
+      <section className="relative">
+        <Suspense fallback={<div className="h-[600px] animate-pulse bg-muted" />}>
+          <AuctionCarousel auctions={carouselAuctions} />
+        </Suspense>
       </section>
 
       {/* Live Auctions */}
@@ -65,35 +48,69 @@ export default function AuctionsPage() {
         </div>
       </section>
 
-      {/* Featured Lots */}
       <section className="bg-secondary/50 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-semibold">Featured Lots</h2>
-              <p className="mt-1 text-muted-foreground">Exceptional items currently open for bidding</p>
+          <div className="text-center">
+            <h2 className="text-2xl font-semibold">Why Choose BidVault?</h2>
+            <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">
+              The premier destination for collectors and connoisseurs seeking exceptional items
+            </p>
+          </div>
+          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="flex flex-col items-center rounded-lg bg-background p-6 text-center shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                <Shield className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="mt-4 font-semibold">Secure Bidding</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Bank-level encryption and secure payment processing protect every transaction
+              </p>
             </div>
-            <Button variant="ghost" asChild className="hidden sm:flex">
-              <Link href="/lots">
-                View All
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <Suspense fallback={<div>Loading...</div>}>
-              {featuredLots.map((lot) => (
-                <LotCard key={lot.id} lot={lot} />
-              ))}
-            </Suspense>
-          </div>
-          <div className="mt-8 text-center sm:hidden">
-            <Button variant="outline" asChild>
-              <Link href="/lots">
-                View All Lots
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
+            <div className="flex flex-col items-center rounded-lg bg-background p-6 text-center shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                <Gavel className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="mt-4 font-semibold">Authenticated Items</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Every lot is verified by industry experts ensuring authenticity and provenance
+              </p>
+            </div>
+            <div className="flex flex-col items-center rounded-lg bg-background p-6 text-center shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                <Globe className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="mt-4 font-semibold">Global Reach</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Access auctions worldwide from the comfort of your home with real-time bidding
+              </p>
+            </div>
+            <div className="flex flex-col items-center rounded-lg bg-background p-6 text-center shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                <Users className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="mt-4 font-semibold">Expert Support</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Dedicated specialists available to assist with inquiries and bidding strategies
+              </p>
+            </div>
+            <div className="flex flex-col items-center rounded-lg bg-background p-6 text-center shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                <Clock className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="mt-4 font-semibold">Transparent Process</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Clear bidding increments, fees, and real-time updates keep you informed
+              </p>
+            </div>
+            <div className="flex flex-col items-center rounded-lg bg-background p-6 text-center shadow-sm">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                <Award className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="mt-4 font-semibold">Premium Quality</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Curated collections featuring only the finest art, antiques, and collectibles
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -115,8 +132,46 @@ export default function AuctionsPage() {
         </section>
       )}
 
-      {/* CTA Section */}
       <section className="border-t border-border bg-muted/30 py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-2xl font-semibold">How It Works</h2>
+            <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">Start bidding in three simple steps</p>
+          </div>
+          <div className="mt-12 grid gap-8 md:grid-cols-3">
+            <div className="relative text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">
+                1
+              </div>
+              <h3 className="mt-4 font-semibold">Create an Account</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Sign up for free and complete your profile to start exploring auctions
+              </p>
+            </div>
+            <div className="relative text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">
+                2
+              </div>
+              <h3 className="mt-4 font-semibold">Register for Auctions</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Browse available auctions and register for the ones that interest you
+              </p>
+            </div>
+            <div className="relative text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary text-2xl font-bold text-primary-foreground">
+                3
+              </div>
+              <h3 className="mt-4 font-semibold">Place Your Bids</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Bid on lots in real-time and track your winning items from your dashboard
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="text-2xl font-semibold">Ready to Start Bidding?</h2>
           <p className="mx-auto mt-2 max-w-xl text-muted-foreground">
