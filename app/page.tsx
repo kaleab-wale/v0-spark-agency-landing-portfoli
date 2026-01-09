@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation"
 import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { ClientLogos } from "@/components/client-logos"
@@ -13,6 +14,8 @@ import { CTASection } from "@/components/cta-section"
 import { Footer } from "@/components/footer"
 
 export default function Home() {
+  redirect("/auctions")
+
   return (
     <main className="min-h-screen">
       <Header />
